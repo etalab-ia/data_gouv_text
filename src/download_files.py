@@ -15,6 +15,9 @@ from tqdm import tqdm
 import pandas as pds
 from argopt import argopt
 from joblib import Parallel, delayed
+import unidecode
+
+from src.utils import get_valid_filename
 
 
 def is_compressed(url):
@@ -24,16 +27,16 @@ def is_compressed(url):
             return ext
 
 
-def downloader(url, id, output_folder, file_type):
+def downloader(url, id, organization, output_folder, file_type):
     try:
         possible_file_type = is_compressed(url)
         if not possible_file_type:
             extension = file_type
-        new_output_folder = os.path.join(output_folder, id[:3])
+        new_output_folder = os.path.join(output_folder, organization)
         if not os.path.exists(new_output_folder):
             os.mkdir(new_output_folder)
         print(f"Downloading file with id {id}")
-        p = subprocess.Popen(["wget", "-O", "{0}/{1}.{2}".format(new_output_folder, id, extension), url])
+        p = subprocess.Popen(["wget", "--timeout", "10", "--tries", "3", "-O", "{0}/{1}.{2}".format(new_output_folder, id, extension), url])
         p.communicate()  # now wait plus that you can send commands to process
         if not p.returncode:
             return 1
@@ -48,21 +51,22 @@ def get_files(file_path, output_folder, file_type, n_jobs):
     df = pds.read_csv(file_path, sep=";").sample(frac=1)
 
     # naively filter the df to get only the desired file_type
-    df = df[df.format == file_type].iloc[:]
+    df = df[df.format == file_type].iloc[:20]
     print(f"There are {len(df)} resources of type {file_type}")
-    urls = df["url"].values[:]
-    resource_ids = df["id"].values[:]
-    dataset_ids = df["dataset.id"].values[:]
+    urls = df["url"].values
+    resource_ids = df["id"].values
+    dataset_ids = df["dataset.id"].values
     new_ids = dataset_ids + "--" + resource_ids
+    organizations = df["dataset.organization"].fillna("NA").apply(lambda x: unidecode.unidecode(get_valid_filename(x))).values
     assert len(urls) == len(new_ids)
 
     if n_jobs > 1:
         succes_downloaded = Parallel(n_jobs=n_jobs)(
-            delayed(downloader)(url, id, output_folder, file_type) for url, id in tqdm(list(zip(urls, new_ids))))
+            delayed(downloader)(url, id, org, output_folder, file_type) for url, id, org in tqdm(list(zip(urls, new_ids, organizations))))
     else:
         succes_downloaded = []
-        for url, id in tqdm(list(zip(urls, new_ids))):
-            succes_downloaded.append(downloader(url, id, output_folder, file_type))
+        for url, id, org in tqdm(list(zip(urls, new_ids, organizations))):
+            succes_downloaded.append(downloader(url, id, org, output_folder, file_type))
 
     print(f"I successfully downloaded {sum(succes_downloaded)} of {len(succes_downloaded)} files")
 

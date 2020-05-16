@@ -1,6 +1,6 @@
 import os
 from glob import glob
-
+import re
 
 def get_files(file_path, extension):
     if not os.path.exists(file_path):
@@ -13,3 +13,7 @@ def get_files(file_path, extension):
     if not doc_paths:
         raise Exception(f"Path {doc_paths} not found")
     return doc_paths
+
+def get_valid_filename(s):
+    s = str(s).strip().replace(' ', '_')
+    return re.sub(r'(?u)[^-\w.]', '', s)
