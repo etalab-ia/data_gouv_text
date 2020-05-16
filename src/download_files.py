@@ -7,6 +7,7 @@ Arguments:
     <i>             An input csv that contains a resource catalog csv (typicaly from data.gouv.fr)
     <o>             The folder path where the files are gonna be downloaded
     <t>             The filetype we want to download
+    --n NFILES      Number of files to download [default: None:int]
     --cores CORES   The number of cores to use in a parallel setting [default: 1:int]
 '''
 import os
@@ -47,11 +48,13 @@ def downloader(url, id, organization, output_folder, file_type):
         return 0
 
 
-def get_files(file_path, output_folder, file_type, n_jobs):
+def get_files(file_path, output_folder, file_type, download_n_files, n_jobs):
     df = pds.read_csv(file_path, sep=";").sample(frac=1)
 
     # naively filter the df to get only the desired file_type
-    df = df[df.format == file_type].iloc[:20]
+    df = df[df.format == file_type]
+    if download_n_files:
+        df = df.iloc[:download_n_files]
     print(f"There are {len(df)} resources of type {file_type}")
     urls = df["url"].values
     resource_ids = df["id"].values
@@ -76,6 +79,7 @@ if __name__ == '__main__':
     file_path = parser.i
     output_folder = parser.o
     file_type = parser.t
+    download_n_files = parser.n
     n_jobs = int(parser.cores)
 
-    get_files(file_path, output_folder, file_type, n_jobs)
+    get_files(file_path, output_folder, file_type, download_n_files, n_jobs)
