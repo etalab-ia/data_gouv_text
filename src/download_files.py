@@ -17,7 +17,7 @@ from argopt import argopt
 from joblib import Parallel, delayed
 import unidecode
 
-from src.utils import get_valid_filename
+from utils import get_valid_filename
 
 
 def is_compressed(url):
