@@ -48,7 +48,7 @@ def get_files(file_path, output_folder, file_type, n_jobs):
     df = pds.read_csv(file_path, sep=";").sample(frac=1)
 
     # naively filter the df to get only the desired file_type
-    df = df[df.format == file_type].iloc[:20]
+    df = df[df.format == file_type].iloc[:]
     print(f"There are {len(df)} resources of type {file_type}")
     urls = df["url"].values[:]
     resource_ids = df["id"].values[:]
