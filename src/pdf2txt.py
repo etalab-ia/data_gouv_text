@@ -18,7 +18,7 @@ from tqdm import tqdm
 from argopt import argopt
 from joblib import Parallel, delayed
 
-from src.utils import get_files
+from utils import get_files
 
 P = pdfbox.PDFBox()
 TOOL = pyocr.get_available_tools()[0]
