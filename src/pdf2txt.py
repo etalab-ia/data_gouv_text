@@ -53,9 +53,8 @@ def file_is_empty(doc_path):
 
 
 def pdf2txt(doc_path):
-    p = pdfbox.PDFBox()
     try:
-        p.extract_text(doc_path)  # writes text to /path/to/my_file.txt
+        P.extract_text(doc_path)  # writes text to /path/to/my_file.txt
         txt_path = doc_path[:-4] + ".txt"
         if file_is_empty(txt_path):
             # Text file is very small, PDF has an image probably, try OCRizing it
