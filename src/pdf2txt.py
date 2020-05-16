@@ -53,9 +53,12 @@ def file_is_empty(doc_path):
 
 
 def pdf2txt(doc_path):
+    txt_path = doc_path[:-4] + ".txt"
+    if os.path.exists(txt_path):
+        tqdm.write(f"File {doc_path} exists. Not converting anything...")
+        return 0
     try:
         P.extract_text(doc_path)  # writes text to /path/to/my_file.txt
-        txt_path = doc_path[:-4] + ".txt"
         if file_is_empty(txt_path):
             # Text file is very small, PDF has an image probably, try OCRizing it
             ocr_txt = ocr_pdf(doc_path)
