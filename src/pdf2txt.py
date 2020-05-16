@@ -53,8 +53,9 @@ def file_is_empty(doc_path):
 
 
 def pdf2txt(doc_path):
+    p = pdfbox.PDFBox()
     try:
-        P.extract_text(doc_path)  # writes text to /path/to/my_file.txt
+        p.extract_text(doc_path)  # writes text to /path/to/my_file.txt
         txt_path = doc_path[:-4] + ".txt"
         if file_is_empty(txt_path):
             # Text file is very small, PDF has an image probably, try OCRizing it
@@ -62,7 +63,7 @@ def pdf2txt(doc_path):
             with open(txt_path, "w") as filo:
                 filo.write(ocr_txt)
         return 1
-    except:
+    except Exception as e:
         print(f"Could not convert to txt file {doc_path}")
         return 0
 
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     doc_paths = get_files(file_path, extension="pdf")
     print(f"Got {len(doc_paths)} files to process")
     if n_jobs > 1:
-        success_transformed = Parallel(n_jobs=n_jobs)(
+        success_transformed = Parallel(n_jobs=n_jobs, backend="multiprocessing")(
             delayed(pdf2txt)(path) for path in tqdm(doc_paths))
     else:
         success_transformed = []
