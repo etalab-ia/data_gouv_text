@@ -45,28 +45,36 @@ def ocr_pdf(doc_path):
         print(f"Could not OCRize file {doc_path}: {e}")
 
 
-def file_is_empty(doc_path):
-    if os.path.getsize(doc_path) < 20:
+def file_is_too_small(doc_path, size_th=20):
+    if os.path.getsize(doc_path) < size_th:
         return True
-    else:
-        return False
+    return False
+
+
+def file_is_too_big(doc_path, size_th=20000000):
+    if os.path.getsize(doc_path) > size_th:
+        return True
+    return False
 
 
 def pdf2txt(doc_path):
     txt_path = doc_path[:-4] + ".txt"
     if os.path.exists(txt_path):
-        tqdm.write(f"File {doc_path} exists. Not converting anything...")
+        tqdm.write(f"File {doc_path} exists. Skipping...")
+        return 0
+    if file_is_too_big(doc_path):
+        tqdm.write(f"File {doc_path} is too big. Skipping...")
         return 0
     try:
         P.extract_text(doc_path)  # writes text to /path/to/my_file.txt
-        if file_is_empty(txt_path):
+        if file_is_too_small(txt_path):
             # Text file is very small, PDF has an image probably, try OCRizing it
             ocr_txt = ocr_pdf(doc_path)
             with open(txt_path, "w") as filo:
                 filo.write(ocr_txt)
         return 1
     except Exception as e:
-        print(f"Could not convert to txt file {doc_path}")
+        print(f"Could not convert to txt file {doc_path}: {str(e)}")
         return 0
 
 
