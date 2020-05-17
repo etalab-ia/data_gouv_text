@@ -6,6 +6,7 @@ Usage:
 Arguments:
     <i>             An path of a txt or a folder with txt to parse
     <o>             The folder path where the JSON files containing the parse are gonna be stored
+    --max_read_bytes MAX   Max size (in bytes) to read from each txt file [default: 250000:int]
     --cores CORES   The number of cores to use in a parallel setting [default: 1:int]
 '''
 import json
@@ -80,16 +81,16 @@ if __name__ == '__main__':
     file_path = parser.i
     output_folder = parser.o
     n_jobs = int(parser.cores)
-
+    max_read_bytes = parser.max_read_bytes
     doc_paths = get_files(file_path, extension="txt")
     tqdm.write(f"Got {len(doc_paths)} files to process")
     if n_jobs > 1:
         success_parsed = Parallel(n_jobs=n_jobs)(
-            delayed(parse)(path) for path in tqdm(doc_paths))
+            delayed(parse)(path, max_read_bytes) for path in tqdm(doc_paths))
     else:
         success_parsed = []
         for path in tqdm(doc_paths):
-            success_parsed.append(parse(path))
+            success_parsed.append(parse(path, max_read_bytes))
 
     tqdm.write(f"I successfully transformed {str(sum(success_parsed))}  of {len(success_parsed)} files")
 #
