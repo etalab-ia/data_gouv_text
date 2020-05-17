@@ -87,7 +87,7 @@ if __name__ == '__main__':
     doc_paths = get_files(file_path, extension="pdf")
     print(f"Got {len(doc_paths)} files to process")
     if n_jobs > 1:
-        success_transformed = Parallel(n_jobs=n_jobs, backend="multiprocessing")(
+        success_transformed = Parallel(n_jobs=n_jobs)(
             delayed(pdf2txt)(path) for path in tqdm(doc_paths))
     else:
         success_transformed = []
