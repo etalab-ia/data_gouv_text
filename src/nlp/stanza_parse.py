@@ -9,6 +9,7 @@ Arguments:
     --cores CORES   The number of cores to use in a parallel setting [default: 1:int]
 '''
 import json
+from typing import List
 
 import stanza
 from argopt import argopt
@@ -19,37 +20,54 @@ from stanza.models.common.doc import Document, Sentence, Token
 
 from src.utils import get_files
 
-NLP = stanza.Pipeline(lang='fr', package=None, processors={'tokenize': 'partut', 'lemma': 'partut',
-                                                           "mwt": "partut",
-                                                           'pos': 'partut', 'depparse': 'default',
+NLP = stanza.Pipeline(lang='fr', package=None, processors={'tokenize': 'default', 'lemma': 'default',
+                                                           "mwt": "default",
+                                                           'pos': 'default  ', 'depparse': 'default',
                                                            'ner': "WikiNER"},
                       use_gpu=False)
-
 
 #
 # NLP = stanza.Pipeline(lang='fr', processors="tokenize,lemma,pos,mwt,depparse", use_gpu=False)
 # NER = stanza.Pipeline(lang='fr',  processors='tokenize,ner',
 #                       pos_batch_size=3000)
+multi_word_token_id = re.compile(r"([0-9]+)-([0-9]+)")
+
+
+def sentence_to_dict(sentence: Sentence, fields: List[str]):
+    ret = []
+    for token in sentence.tokens:
+        if multi_word_token_id.match(token.id):
+            token_dict = {}
+            for field in fields:
+                if getattr(token, field) is not None:
+                    token_dict[field] = getattr(token, field)
+            ret.append(token_dict)
+        for word in token.words:
+            if not multi_word_token_id.match(token.id):
+                temp = word.to_dict()
+                if getattr(token, "ner") is not None:
+                    temp.update({"ner": token.ner})
+                ret.append(temp)
+            else:
+                ret.append(word.to_dict())
+    return ret
+
 
 def parse(doc_path: str, max_read_bytes=350000):
-    fields = ['id', 'text', 'lemma', 'upos', 'xpos', 'feats', 'head',
-              'deprel', 'deps', 'misc', 'ner', 'start_char', 'end_char', 'type']
+    fields = ['id', 'text',  'misc', 'ner']
     tqdm.write(f"Parsing file {doc_path}")
     json_path = doc_path[:-4] + ".json"
 
     try:
         with open(doc_path) as filo:
             content = filo.read(max_read_bytes)
-        content = re.sub(r"[^\n]\n[^\n]", "\n\n", content)
+        content = re.sub(r"\n", "\n\n", content)
         doc: Document = NLP(content)
         sentences = []
         for s in doc.sentences:
             s: Sentence = s
-            tokens = []
-            for t in s.tokens:
-                t: Token = t
-                tokens.append(t.to_dict(fields=fields))
-            sentences.append(tokens)
+            sent_dict = sentence_to_dict(s, fields)
+            sentences.append(sent_dict)
         with open(json_path, "w") as filo:
             json.dump(sentences, filo, indent=4)
         return 1

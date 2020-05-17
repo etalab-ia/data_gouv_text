@@ -39,7 +39,7 @@ def ocr_pdf(doc_path):
         for i, img in enumerate(images):
             img = img.convert('L')
             print(f"\tOCRizing image {i} of file {doc_path}.")
-            txt += TOOL.image_to_string(img, lang="fra", builder=BUILDER)
+            txt += TOOL.image_to_string(img, lang="fra", builder=BUILDER) + "\n\n"
         return txt
     except Exception as e:
         print(f"Could not OCRize file {doc_path}: {e}")
@@ -60,7 +60,7 @@ def file_is_too_big(doc_path, size_th=20000000):
 def pdf2txt(doc_path):
     txt_path = doc_path[:-4] + ".txt"
     if os.path.exists(txt_path):
-        tqdm.write(f"File {doc_path} exists. Skipping...")
+        tqdm.write(f"File {txt_path} exists. Skipping...")
         return 0
     if file_is_too_big(doc_path):
         tqdm.write(f"File {doc_path} is too big. Skipping...")
