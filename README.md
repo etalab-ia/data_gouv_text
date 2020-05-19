@@ -39,6 +39,25 @@ L'arobresence est la suivante :
 ### Code
 Les scripts Python utilisés pour faire cette extraction sont [ici](https://github.com/psorianom/data_gouv_text).
 
+### Distribution des textes [au 20 mai 2020]
+
+
+Le top 10 d'organisations avec le nombre le plus grand des documents est: 
+```python
+[('Les_Lilas', 1294),
+ ('Ville_de_Pirae', 1099),
+ ('Region_Hauts-de-France', 592),
+ ('Ressourcerie_datalocale', 297),
+ ('NA', 268),
+ ('CORBION', 244),
+ ('Education_Nationale', 189),
+ ('Incubateur_de_Services_Numeriques', 157),
+ ('Ministere_des_Solidarites_et_de_la_Sante', 148),
+ ('Communaute_dAgglomeration_Plaine_Vallee', 142)]
+```
+Et leur aperçu en 2D est (HashFeatures+TruncatedSVD+t-SNE) :
+
+
 ### Remarques
 
 Dû à la qualité des pdfs d'origine (scans de basse résolution, pdfs non alignés, ...) et à la performance des méthodes de transformation pdf-->txt, les résultats peuvent être très bruités.
