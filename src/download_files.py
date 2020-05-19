@@ -37,8 +37,11 @@ def downloader(url, id, organization, output_folder, file_type):
         if not os.path.exists(new_output_folder):
             os.mkdir(new_output_folder)
         print(f"Downloading file with id {id}")
+        if os.path.exists(f"{new_output_folder}/{id}.{extension}"):
+            print(f"File with id {id} already exists!")
+            return 0
         p = subprocess.Popen(
-            ["wget", "-nc", "--timeout", "10", "--tries", "3", "-O", "{0}/{1}.{2}".format(new_output_folder, id, extension),
+            ["wget", "--timeout", "10", "--tries", "3", "-O", "{0}/{1}.{2}".format(new_output_folder, id, extension),
              url])
         p.communicate()  # now wait plus that you can send commands to process
         if not p.returncode:
