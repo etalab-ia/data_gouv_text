@@ -37,7 +37,9 @@ def downloader(url, id, organization, output_folder, file_type):
         if not os.path.exists(new_output_folder):
             os.mkdir(new_output_folder)
         print(f"Downloading file with id {id}")
-        p = subprocess.Popen(["wget", "--timeout", "10", "--tries", "3", "-O", "{0}/{1}.{2}".format(new_output_folder, id, extension), url])
+        p = subprocess.Popen(
+            ["wget", "-nc", "--timeout", "10", "--tries", "3", "-O", "{0}/{1}.{2}".format(new_output_folder, id, extension),
+             url])
         p.communicate()  # now wait plus that you can send commands to process
         if not p.returncode:
             return 1
@@ -60,12 +62,14 @@ def get_files(file_path, output_folder, file_type, download_n_files, n_jobs):
     resource_ids = df["id"].values
     dataset_ids = df["dataset.id"].values
     new_ids = dataset_ids + "--" + resource_ids
-    organizations = df["dataset.organization"].fillna("NA").apply(lambda x: unidecode.unidecode(get_valid_filename(x))).values
+    organizations = df["dataset.organization"].fillna("NA").apply(
+        lambda x: unidecode.unidecode(get_valid_filename(x))).values
     assert len(urls) == len(new_ids)
 
     if n_jobs > 1:
         succes_downloaded = Parallel(n_jobs=n_jobs)(
-            delayed(downloader)(url, id, org, output_folder, file_type) for url, id, org in tqdm(list(zip(urls, new_ids, organizations))))
+            delayed(downloader)(url, id, org, output_folder, file_type) for url, id, org in
+            tqdm(list(zip(urls, new_ids, organizations))))
     else:
         succes_downloaded = []
         for url, id, org in tqdm(list(zip(urls, new_ids, organizations))):
