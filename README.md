@@ -36,9 +36,6 @@ L'arobresence est la suivante :
 
 ```
 
-### Code
-Les scripts Python utilisés pour faire cette extraction sont [ici](https://github.com/psorianom/data_gouv_text).
-
 ### Distribution des textes [au 20 mai 2020]
 
 
@@ -58,7 +55,8 @@ Le top 10 d'organisations avec le nombre le plus grand des documents est:
 Et leur aperçu en 2D est (HashFeatures+TruncatedSVD+t-SNE) :
 
 
+### Code
+Les scripts Python utilisés pour faire cette extraction sont [ici](https://github.com/psorianom/data_gouv_text).
+
 ### Remarques
-
 Dû à la qualité des pdfs d'origine (scans de basse résolution, pdfs non alignés, ...) et à la performance des méthodes de transformation pdf-->txt, les résultats peuvent être très bruités.
-
