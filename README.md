@@ -7,7 +7,7 @@ Ce dataset contient le texte extrait de 6602 fichiers qui ont l'extension `pdf` 
 Le dataset contient que les pdfs de 20 Mb ou moins et qui sont toujours disponibles sur l'adresse URL indiqué.
 
 L'extraction a été réalisée avec [PDFBox](https://pdfbox.apache.org/) via son wrapper Python [python-pdfbox](https://pypi.org/project/python-pdfbox/). Les PDFs qui sont des images (scans, cartes, etc)
-sont détectés avec une heuristique simple : si après la conversion au format texte avec `pdfbox`, la taille du fichier produit est inférieure à 5 bytes on considère qu'il s'agit d'une image.
+sont détectés avec une heuristique simple : si après la conversion au format texte avec `pdfbox`, la taille du fichier produit est inférieure à 20 bytes on considère qu'il s'agit d'une image.
 Dans ce cas, on procède à la OCRisation. Celle-ci est réalisé avec [Tesseract](https://github.com/tesseract-ocr/tesseract) via son wrapper Python [pyocr](https://github.com/openpaperwork/pyocr).
 
 Le résultat sont de fichiers `txt` provenant des `pdfs` triés par organisation (l'organisation qui a publié la ressource). 
@@ -52,7 +52,7 @@ Le top 10 d'organisations avec le nombre le plus grand des documents est:
  ('Ministere_des_Solidarites_et_de_la_Sante', 148),
  ('Communaute_dAgglomeration_Plaine_Vallee', 142)]
 ```
-Et leur aperçu en 2D est (HashFeatures+TruncatedSVD+t-SNE) :
+Et leur aperçu en 2D est ([HashFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.HashingVectorizer.html)+[TruncatedSVD](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html)+[t-SNE](https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html) :
 
 
 ### Code
