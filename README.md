@@ -52,7 +52,7 @@ Le top 10 d'organisations avec le nombre le plus grand des documents est:
  ('Ministere_des_Solidarites_et_de_la_Sante', 148),
  ('Communaute_dAgglomeration_Plaine_Vallee', 142)]
 ```
-Et leur aperçu en 2D est ([HashFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.HashingVectorizer.html)+[TruncatedSVD](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html)+[t-SNE](https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html) :
+Et leur aperçu en 2D est ([HashFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.HashingVectorizer.html)+[TruncatedSVD](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html)+[t-SNE](https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html)) :
 
 
 ### Code
