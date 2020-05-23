@@ -53,11 +53,6 @@ def is_compressed(url):
 
 
 def downloader(url, id, organization, output_folder, file_type, max_size):
-    # url = "https://erdf.opendatasoft.com/explore/dataset/reseauoo-bt/download?format=csv&timezone=Europe/Berlin&use_labelos_for_header=true"
-    def preexec_fn():
-        if max_size:
-            resource.setrlimit(resource.RLIMIT_FSIZE, (max_size, max_size))
-
     downloaded_file_size = -1
     downloaded_file_path = Path("")
     try:
@@ -75,12 +70,6 @@ def downloader(url, id, organization, output_folder, file_type, max_size):
 
         # Download file
         download_status = download_file(url=url, downloaded_file_path=downloaded_file_path, max_bytes=100)
-        # p = subprocess.Popen(
-        #     ["wget", "--timeout", "10", "--no-check-certificate", "--tries", "3", "-O", downloaded_file_path, url],
-        #     preexec_fn=preexec_fn)
-        # p.communicate()  # now wait plus that you can send commands to process
-        # downloaded_file_size = downloaded_file_path.stat().st_size
-
         if not download_status:
             return 0
         else:
@@ -94,7 +83,7 @@ def downloader(url, id, organization, output_folder, file_type, max_size):
 
 
 def get_files(file_path, output_folder, file_type, download_n_files, max_size=None, n_jobs=1):
-    df = pds.read_csv(file_path, sep=";").sample(frac=1)
+    df = pds.read_csv(file_path, sep=";")
 
     # naively filter the df to get only the desired file_type
     df = df[df.format == file_type]
