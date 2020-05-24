@@ -69,7 +69,7 @@ def downloader(url, id, organization, output_folder, file_type, max_size):
             return 0
 
         # Download file
-        download_status = download_file(url=url, downloaded_file_path=downloaded_file_path, max_bytes=100)
+        download_status = download_file(url=url, downloaded_file_path=downloaded_file_path, max_bytes=max_size)
         if not download_status:
             return 0
         else:
@@ -82,8 +82,8 @@ def downloader(url, id, organization, output_folder, file_type, max_size):
             downloaded_file_path.unlink()
 
 
-def get_files(file_path, output_folder, file_type, download_n_files, max_size=None, n_jobs=1):
-    df = pds.read_csv(file_path, sep=";")
+def main(file_path, output_folder, file_type, download_n_files, max_size=None, n_jobs=1):
+    df = pds.read_csv(file_path, sep=";").sample(frac=1)
 
     # naively filter the df to get only the desired file_type
     df = df[df.format == file_type]
@@ -118,4 +118,4 @@ if __name__ == '__main__':
     max_size = parser.max_size
     n_jobs = int(parser.cores)
 
-    get_files(file_path, output_folder, file_type, download_n_files, max_size, n_jobs)
+    main(file_path, output_folder, file_type, download_n_files, max_size, n_jobs)
