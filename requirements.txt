@@ -1,0 +1,8 @@
+python-pdfbox
+tqdm
+utils
+joblib
+argopt
+pdf2image
+pandas
+unidecode
