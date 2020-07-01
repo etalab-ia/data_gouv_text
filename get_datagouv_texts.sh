@@ -8,8 +8,8 @@ eval "$(conda shell.bash hook)"
 conda activate data_gouv_text
 
 
-echo "Download pdf files"
-python src/download_files.py $RESOURCE_CSV $DOWNLOAD_OUTPUT $FILE_TYPE
+#echo "Download pdf files"
+#python src/download_files.py $RESOURCE_CSV $DOWNLOAD_OUTPUT $FILE_TYPE
 
 echo "Transform to text"
 python src/pdf2txt.py $DOWNLOAD_OUTPUT $TXT_OUTPUT

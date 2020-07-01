@@ -6,3 +6,4 @@ argopt
 pdf2image
 pandas
 unidecode
+jupyter

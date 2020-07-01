@@ -68,6 +68,7 @@ def pdf2txt(doc_path):
     try:
         P.extract_text(doc_path)  # writes text to /path/to/my_file.txt
         if file_is_too_small(txt_path):
+            print(f"THIS FILE MIGHT BE AN IMAGE CHECK IT OUT {txt_path}")
             # Text file is very small, PDF has an image probably, try OCRizing it
             ocr_txt = ocr_pdf(doc_path)
             with open(txt_path, "w") as filo:
