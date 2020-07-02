@@ -70,10 +70,14 @@ def pdf2txt(doc_path):
         if file_is_too_small(txt_path):
             print(f"THIS FILE MIGHT BE AN IMAGE CHECK IT OUT {txt_path}")
             # Text file is very small, PDF has an image probably, try OCRizing it
-            ocr_txt = ocr_pdf(doc_path)
-            with open(txt_path, "w") as filo:
-                filo.write(ocr_txt)
-        return 1
+            try:
+                ocr_txt = ocr_pdf(doc_path)
+                with open(txt_path, "w") as filo:
+                    filo.write(ocr_txt)
+                return  1
+            except Exception as e:
+                print(f"Could not convert to txt file {doc_path}: {str(e)}")
+                return 0
     except Exception as e:
         print(f"Could not convert to txt file {doc_path}: {str(e)}")
         return 0
