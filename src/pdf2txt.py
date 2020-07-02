@@ -11,6 +11,7 @@ Arguments:
 import os
 import tempfile
 
+import ocrmypdf
 import pdfbox
 import pyocr.builders
 from pdf2image import convert_from_path
@@ -27,7 +28,7 @@ BUILDER = pyocr.builders.TextBuilder()
 
 def pdf2image(doc_path):
     with tempfile.TemporaryDirectory() as path:
-        print(f"Transforming file {doc_path} to image")
+        #print(f"Transforming file {doc_path} to image")
         images_from_path = convert_from_path(doc_path, output_folder=path)
     return images_from_path
 
@@ -38,7 +39,7 @@ def ocr_pdf(doc_path):
         txt = ""
         for i, img in enumerate(images):
             img = img.convert('L')
-            print(f"\tOCRizing image {i} of file {doc_path}.")
+            #print(f"\tOCRizing image {i} of file {doc_path}.")
             txt += TOOL.image_to_string(img, lang="fra", builder=BUILDER) + "\n\n"
         return txt
     except Exception as e:
@@ -60,7 +61,7 @@ def file_is_too_big(doc_path, size_th=20000000):
 def pdf2txt(doc_path):
     txt_path = doc_path[:-4] + ".txt"
     if os.path.exists(txt_path) and not(file_is_too_small(txt_path)):
-        tqdm.write(f"File {txt_path} exists. Skipping...")
+        #tqdm.write(f"File {txt_path} exists. Skipping...")
         return 0
     if file_is_too_big(doc_path):
         tqdm.write(f"File {doc_path} is too big. Skipping...")
@@ -68,16 +69,20 @@ def pdf2txt(doc_path):
     try:
         P.extract_text(doc_path)  # writes text to /path/to/my_file.txt
         if file_is_too_small(txt_path):
-            print(f"THIS FILE MIGHT BE AN IMAGE CHECK IT OUT {txt_path}")
             # Text file is very small, PDF has an image probably, try OCRizing it
             try:
                 ocr_txt = ocr_pdf(doc_path)
                 with open(txt_path, "w") as filo:
                     filo.write(ocr_txt)
-                return  1
+                return 1
             except Exception as e:
-                print(f"Could not convert to txt file {doc_path}: {str(e)}")
-                return 0
+                if file_is_too_small(txt_path):
+                    try:
+                        ocrmypdf.ocr(doc_path, doc_path[-4] + '_ocr.pdf', sidecar=txt_path)
+                        return 1
+                    except Exception as e:
+                        print(f"Could not ocr convert to txt file {doc_path}: {str(e)}")
+                        return 0
     except Exception as e:
         print(f"Could not convert to txt file {doc_path}: {str(e)}")
         return 0
