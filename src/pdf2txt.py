@@ -59,7 +59,7 @@ def file_is_too_big(doc_path, size_th=20000000):
 
 def pdf2txt(doc_path):
     txt_path = doc_path[:-4] + ".txt"
-    if os.path.exists(txt_path):
+    if os.path.exists(txt_path) and not(file_is_too_small(txt_path)):
         tqdm.write(f"File {txt_path} exists. Skipping...")
         return 0
     if file_is_too_big(doc_path):
