@@ -54,6 +54,7 @@ Le top 10 d'organisations avec le nombre le plus grand des documents est:
 ```
 Et leur aperçu en 2D est ([HashFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.HashingVectorizer.html)+[TruncatedSVD](https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.TruncatedSVD.html)+[t-SNE](https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html)) :
 
+![2D vis](/img/samplefigure.png)
 
 ### Code
 Les scripts Python utilisés pour faire cette extraction sont [ici](https://github.com/psorianom/data_gouv_text).
